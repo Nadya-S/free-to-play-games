@@ -18,7 +18,13 @@ const MainPage = () => {
   const error = useSelector((state) => state.error);
 
   useEffect(() => {
-    getGames(dispatch, platform, genre, sort);
+    let controller = new AbortController();
+
+    getGames(dispatch, platform, genre, sort, controller);
+
+    return () => {
+      controller.abort();
+    };
   }, [dispatch, platform, genre, sort]);
 
   return (

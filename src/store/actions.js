@@ -8,10 +8,10 @@ import {
 } from "./gameReducer";
 import { setExpiresTime } from "../utils/cookiesExpiresTime";
 
-export const getGames = (dispatch, platform, genre, sort) => {
+export const getGames = (dispatch, platform, genre, sort, controller) => {
   dispatch(setIsLoadingAction(true));
   dispatch(setError(false));
-  Api.getGames(platform, genre, sort)
+  Api.getGames(platform, genre, sort, controller)
     .then((res) => {
       dispatch(getGamesAction([...res]));
     })
@@ -19,15 +19,20 @@ export const getGames = (dispatch, platform, genre, sort) => {
       dispatch(setIsLoadingAction(false));
     })
     .catch((err) => {
-      dispatch(setError(true));
-      console.error(err);
-      dispatch(setIsLoadingAction(false));
+      if (err.name == "AbortError") {
+        dispatch(setError(false));
+        dispatch(setIsLoadingAction(false));
+      } else {
+        dispatch(setError(true));
+        console.error(err);
+        dispatch(setIsLoadingAction(false));
+      }
     });
 };
 
-export const getCurrentGame = (id, dispatch) => {
+export const getCurrentGame = (id, dispatch, controller) => {
   dispatch(setIsLoadingAction(true));
-  Api.getCurrentGame(id)
+  Api.getCurrentGame(id, controller)
     .then((currentGame) => {
       dispatch(getCurrentGameAction(currentGame));
       Cookies.set(id, JSON.stringify(currentGame), {
@@ -38,8 +43,13 @@ export const getCurrentGame = (id, dispatch) => {
       dispatch(setIsLoadingAction(false));
     })
     .catch((err) => {
-      dispatch(setError(true));
-      console.error(err);
-      dispatch(setIsLoadingAction(false));
+      if (err.name == "AbortError") {
+        dispatch(setError(false));
+        dispatch(setIsLoadingAction(false));
+      } else {
+        dispatch(setError(true));
+        console.error(err);
+        dispatch(setIsLoadingAction(false));
+      }
     });
 };

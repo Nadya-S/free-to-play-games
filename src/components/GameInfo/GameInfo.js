@@ -93,7 +93,6 @@ const GameInfo = ({ currentGame, error }) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 40,
           }}
         >
           <Title
@@ -105,7 +104,6 @@ const GameInfo = ({ currentGame, error }) => {
           >
             {currentGame.title}
           </Title>
-          <BackButton />
         </Row>
         <Title level={4} style={{ color: "#4E83AC" }}>
           Information

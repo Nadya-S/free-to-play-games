@@ -7,7 +7,7 @@ class Api {
     };
   }
 
-  getGames(platform, genre, sort) {
+  getGames(platform, genre, sort, controller) {
     const url = new URL(`${this.baseUrl}games`);
 
     platform !== "all" && url.searchParams.append("platform", platform);
@@ -17,13 +17,15 @@ class Api {
     return fetch(`${url}`, {
       method: "GET",
       headers: this._headers,
+      signal: controller.signal,
     }).then(this._checkResponse);
   }
 
-  getCurrentGame(itemId) {
+  getCurrentGame(itemId, controller) {
     return fetch(`${this.baseUrl}game?id=${itemId}`, {
       method: "GET",
       headers: this._headers,
+      signal: controller.signal,
     }).then(this._checkResponse);
   }
 

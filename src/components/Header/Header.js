@@ -1,15 +1,17 @@
 import { Layout, Typography } from "antd";
 const { Title } = Typography;
 
-const Header = () => {
+const Header = ({ children }) => {
   return (
     <Layout.Header
       style={{
-        height: 70,
+        height: "fit-content",
         display: "flex",
         alignItems: "start",
         background: "#00335A",
-        paddingLeft: "calc((100% - 1280px)/2)",
+        padding: "0 calc((100% - 1280px)/2)",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
       }}
     >
       <Title
@@ -22,6 +24,7 @@ const Header = () => {
       >
         Free to play games
       </Title>
+      {children}
     </Layout.Header>
   );
 };
