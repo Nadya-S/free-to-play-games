@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { getGames } from "../store/actions";
 import Preloader from "../components/Preloader/Preloader";
-import { setCardLimit } from "../store/gameReducer";
+import useLimit from "../hooks/useLimit";
 
 const MainPage = () => {
   const dispatch = useDispatch();
@@ -19,29 +19,29 @@ const MainPage = () => {
   const sort = useSelector((state) => state.sort);
   const isLoading = useSelector((state) => state.isLoading);
   const error = useSelector((state) => state.error);
-  const cardLimit = useSelector((state) => state.cardLimit);
+  const { limit, setLimit, countOfAdd } = useLimit();
 
   useEffect(() => {
     if (error || games.length === 0) return;
     if (observer.current) observer.current.disconnect();
     var callback = function (entries, observer) {
-      if (entries[0].isIntersecting && games.length > cardLimit && !isLoading) {
-        dispatch(setCardLimit(cardLimit + 3));
+      if (entries[0].isIntersecting && games.length > limit && !isLoading) {
+        setLimit(limit + countOfAdd);
       }
     };
     observer.current = new IntersectionObserver(callback);
     observer.current.observe(lastElement.current);
-  }, [cardLimit, games, error, isLoading, dispatch]);
+  }, [limit, games, error, isLoading, setLimit, countOfAdd]);
 
   useEffect(() => {
     let controller = new AbortController();
     getGames(dispatch, platform, genre, sort, controller);
 
     return () => {
-      dispatch(setCardLimit(12));
+      setLimit(12);
       controller.abort();
     };
-  }, [dispatch, platform, genre, sort]);
+  }, [dispatch, platform, genre, sort, setLimit]);
 
   return (
     <Layout
@@ -64,7 +64,7 @@ const MainPage = () => {
         {isLoading ? (
           <Preloader />
         ) : (
-          <CardList data={games.slice(0, cardLimit)} error={error} />
+          <CardList data={games.slice(0, limit)} error={error} />
         )}
         <div ref={lastElement} style={{ height: 20 }}></div>
       </Layout.Content>
