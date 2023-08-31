@@ -14,26 +14,28 @@ class Api {
     genre !== "all" && url.searchParams.append("category", genre);
     sort !== "relevance" && url.searchParams.append("sort-by", sort);
 
-    return fetch(`${url}`, {
-      method: "GET",
-      headers: this._headers,
-      signal: controller.signal,
-    }).then(this._checkResponse);
+    return this._sendRequest(url, controller);
   }
 
   getCurrentGame(itemId, controller) {
-    return fetch(`${this.baseUrl}game?id=${itemId}`, {
-      method: "GET",
-      headers: this._headers,
-      signal: controller.signal,
-    }).then(this._checkResponse);
+    const url = `${this.baseUrl}game?id=${itemId}`;
+    return this._sendRequest(url, controller);
   }
 
-  _checkResponse(res) {
-    if (res.ok) {
-      return res.json();
+  async _sendRequest(url, controller) {
+    for (let i = 0; i < 4; i++) {
+      let response = await fetch(`${url}`, {
+        method: "GET",
+        headers: this._headers,
+        signal: controller.signal,
+      });
+      if (response.ok) {
+        let json = await response.json();
+        return json;
+      } else if (i === 3) {
+        return Promise.reject(`Ошибка: ${response.status}`);
+      }
     }
-    return Promise.reject(`Ошибка: ${res.status}`);
   }
 }
 
