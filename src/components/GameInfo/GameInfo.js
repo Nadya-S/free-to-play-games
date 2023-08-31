@@ -1,5 +1,4 @@
 import { Col, Image, Row, Typography, Descriptions } from "antd";
-import BackButton from "../BackButton/BackButton";
 import ScreenShotsCarousel from "../ScreenShotsCarousel/ScreenShotsCarousel";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import Paragraph from "antd/es/typography/Paragraph";
